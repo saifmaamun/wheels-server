@@ -79,6 +79,41 @@ async function run() {
             console.log(result);
             res.json(result);
         });
+
+
+// make Admin 
+        app.put('/users/admin', async (req, res) => {
+            const user = req.body;
+            console.log('put',user)
+                    const filter = { email: user.email };
+                    const updateDoc = { $set: { role: 'admin' } };
+                    const result = await usersCollection.updateOne(filter, updateDoc);
+                    res.json(result);
+                
+        })
+// check admin
+        app.get('/users/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email: email };
+            const user = await usersCollection.findOne(query);
+            let isAdmin = false;
+            if (user?.role === 'admin') {
+                isAdmin = true;
+            }
+            res.json({ admin: isAdmin });
+        })
+            
+
+        //DELETE API
+        app.delete('/purcheased/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await purcheasedCar.deleteOne(query)
+            console.log(result)
+            res.json(result)
+        })
+
+
         // POST API
         // app.post('/products', async (req, res) => {
         //     const products = req.body;
