@@ -25,6 +25,7 @@ async function run() {
         const carsCollection = database.collection("cars");
         const purcheasedCar = database.collection("purcheased");
         const usersCollection = database.collection("users");
+        const reviewsCollection = database.collection("reviews");
         
 
 
@@ -35,7 +36,23 @@ async function run() {
             console.log('getting from products')
             res.send(products);
         })
+        // reviews
+        app.get('/reviews', async (req, res) => {
+            const cursor = reviewsCollection.find({});
+            const reviews = await cursor.toArray();
+            console.log('getting from reviews')
+            res.send(reviews);
+        })
 
+        // GET A SINGEL API
+        app.get('/details/:id', async (req, res) => {
+            const id = req.params.id;
+            console.log('specific id', id)
+            const query = { _id: ObjectId(id) };
+            const car = await carsCollection.findOne(query);
+            console.log('from details', car)
+            res.json(car)
+        })
 
         // for purchase
         // GET API
@@ -58,17 +75,15 @@ async function run() {
             res.json(result)
         })
 
-
-
-        // GET A SINGEL API
-        app.get('/details/:id', async (req, res) => {
-            const id = req.params.id;
-            console.log('specific id', id)
-            const query = { _id: ObjectId(id) };
-            const car = await carsCollection.findOne(query);
-            console.log('from details',car)
-            res.json(car)
+        // add product
+        app.post('/products', async (req, res) => {
+            const products = req.body;
+            console.log('hitting', products)
+            const result = await carsCollection.insertOne(products);
+            console.log(result)
+            res.json(result)
         })
+
 
 
         // POST API for 
@@ -80,6 +95,16 @@ async function run() {
             res.json(result);
         });
 
+
+        // POST API
+        // reviews
+        app.post('/reviews', async (req, res) => {
+            const reviews = req.body;
+            console.log('hitting', reviews)
+            const result = await reviewsCollection.insertOne(reviews);
+            console.log(result)
+            res.json(result)
+        })
 
 // make Admin 
         app.put('/users/admin', async (req, res) => {
@@ -114,15 +139,7 @@ async function run() {
         })
 
 
-        // POST API
-        // app.post('/products', async (req, res) => {
-        //     const products = req.body;
-        //     console.log('hitting', products)
-
-        //     const result = await carsCollection.insertOne(products);
-        //     console.log(result)
-        //     res.json(result)
-        // })
+        
 
 
         
@@ -131,16 +148,6 @@ async function run() {
     }
 }
 run().catch(console.dir);
-
-
-
-
-
-
-
-
-
-
 
 
 app.get('/', (req, res) => {
