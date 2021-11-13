@@ -23,6 +23,7 @@ async function run() {
         await client.connect();
         const database = client.db("audiCars");
         const carsCollection = database.collection("cars");
+        const purcheasedCar = database.collection("purcheased");
         
 
 
@@ -37,12 +38,25 @@ async function run() {
 
         // for purchase
         // GET API
-        app.get('/purchase', async (req, res) => {
-            const cursor = bookedTour.find({});
-            const booked = await cursor.toArray();
-            console.log("showing from booked", booked)
-            res.send(booked);
+        app.get('/purcheased', async (req, res) => {
+            const cursor = purcheasedCar.find({});
+            const purcheased = await cursor.toArray();
+            console.log("showing from purcheased", purcheased)
+            res.send(purcheased);
         })
+
+
+
+        // for purchase
+        // POST API
+        app.post('/purcheased', async (req, res) => {
+            const purcheased = req.body;
+            console.log('hitting', purcheased)
+            const result = await purcheasedCar.insertOne(purcheased);
+            console.log(result)
+            res.json(result)
+        })
+
 
 
         // GET A SINGEL API
