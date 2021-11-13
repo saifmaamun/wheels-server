@@ -24,6 +24,7 @@ async function run() {
         const database = client.db("audiCars");
         const carsCollection = database.collection("cars");
         const purcheasedCar = database.collection("purcheased");
+        const usersCollection = database.collection("users");
         
 
 
@@ -70,6 +71,14 @@ async function run() {
         })
 
 
+        // POST API for 
+        // users
+        app.post('/users', async (req, res) => {
+            const user = req.body;
+            const result = await usersCollection.insertOne(user);
+            console.log(result);
+            res.json(result);
+        });
         // POST API
         // app.post('/products', async (req, res) => {
         //     const products = req.body;
